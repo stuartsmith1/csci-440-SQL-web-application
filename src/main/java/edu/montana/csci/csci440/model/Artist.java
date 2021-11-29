@@ -51,9 +51,10 @@ public class Artist extends Model {
     public static List<Artist> all(int page, int count) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM artists LIMIT ?"
+                     "SELECT * FROM artists LIMIT ?, ?"
              )) {
-            stmt.setInt(1, count);
+            stmt.setInt(1, count*(page-1));
+            stmt.setInt(2, count);
             ResultSet results = stmt.executeQuery();
             List<Artist> resultList = new LinkedList<>();
             while (results.next()) {
