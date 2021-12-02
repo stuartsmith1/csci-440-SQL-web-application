@@ -67,12 +67,20 @@ public class Homework3 extends DBTest {
     public void selectPopularTracksAndTheirAlbums() throws SQLException {
 
         // HINT: join to invoice items and do a group by/having to get the right answer
-        List<Map<String, Object>> tracks = executeSQL("");
+        List<Map<String, Object>> tracks = executeSQL("SELECT tracks.Name, COUNT(invoice_items.TrackId) as tracks_sold FROM invoice_items\n" +
+                "JOIN tracks ON invoice_items.TrackId = tracks.TrackId\n" +
+                "GROUP BY tracks.TrackId\n" +
+                "HAVING tracks_sold > 1;");
         assertEquals(256, tracks.size());
 
         // HINT: join to tracks and invoice items and do a group by/having to get the right answer
         //       note: you will need to use the DISTINCT operator to get the right result!
-        List<Map<String, Object>> albums = executeSQL("");
+        List<Map<String, Object>> albums = executeSQL("SELECT DISTINCT *\n" +
+                "FROM (SELECT albums.Title, COUNT(invoice_items.TrackId) as tracks_sold FROM invoice_items\n" +
+                "JOIN tracks ON invoice_items.TrackId = tracks.TrackId\n" +
+                "JOIN albums ON tracks.AlbumId = albums.AlbumId\n" +
+                "GROUP BY tracks.TrackId\n" +
+                "HAVING tracks_sold > 1)");
         assertEquals(166, albums.size());
     }
 
@@ -85,7 +93,13 @@ public class Homework3 extends DBTest {
      * */
     public void selectCustomersMeetingCriteria() throws SQLException {
         // HINT: join to invoice items and do a group by/having to get the right answer
-        List<Map<String, Object>> tracks = executeSQL("" );
+        List<Map<String, Object>> tracks = executeSQL("SELECT Email\n" +
+                "FROM(SELECT DISTINCT customers.* FROM invoices\n" +
+                "JOIN invoice_items on invoices.InvoiceId = invoice_items.InvoiceId\n" +
+                "JOIN customers ON invoices.CustomerId = customers.CustomerId\n" +
+                "JOIN tracks ON tracks.TrackId = invoice_items.TrackId\n" +
+                "WHERE GenreId = 1)\n" +
+                "WHERE 3 IN (SupportRepId)" );
         assertEquals(21, tracks.size());
     }
 
