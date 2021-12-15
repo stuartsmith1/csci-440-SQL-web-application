@@ -18,6 +18,7 @@ public class AlbumsController {
 
         post("/albums/new", (req, resp) -> {
             Album album = new Album();
+            System.out.println(req);
             Web.putValuesInto(album, "Title");
             if (album.create()) {
                 Web.message("Created A Album!");
