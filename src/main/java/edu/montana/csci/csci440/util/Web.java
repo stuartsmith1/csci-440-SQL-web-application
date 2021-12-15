@@ -57,7 +57,9 @@ public class Web {
                     int i = Integer.parseInt(req.queryParams(property));
                     method.invoke(obj, i);
                 } else if (method.getParameterTypes()[0] == Long.class || method.getParameterTypes()[0] == Long.TYPE) {
+                    System.out.println(req);
                     long i = Long.parseLong(req.queryParams(property));
+                    System.out.println(req.queryParams(property));
                     method.invoke(obj, i);
                 } else if (method.getParameterTypes()[0] == Date.class) {
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");

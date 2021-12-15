@@ -68,13 +68,10 @@ public class Track extends Model {
 
     public static Long count() {
         Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
-        String s = redisClient.get(REDIS_CACHE_KEY);
-        if (s == null){
-            try (Connection conn = DB.connect();
+        try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) as Count FROM tracks")) {
                 ResultSet results = stmt.executeQuery();
                 if (results.next()) {
-                    redisClient.set(REDIS_CACHE_KEY, results.getString("Count"));
                     return results.getLong("Count");
                 } else {
                     throw new IllegalStateException("Should find a count!");
@@ -82,10 +79,6 @@ public class Track extends Model {
             } catch (SQLException sqlException) {
                 throw new RuntimeException(sqlException);
             }
-        }
-        else{
-            return Long.parseLong(redisClient.get(REDIS_CACHE_KEY));
-        }
     }
 
     public Album getAlbum() {
